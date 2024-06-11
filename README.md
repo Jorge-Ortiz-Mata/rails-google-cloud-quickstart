@@ -7,7 +7,7 @@ Under the folder **/docs** of the root path, you will find each configuration re
 
 - If you want to start developing locally, see the development documentation.
 
-- If you want to see the GCP configuration for staging and production, see the gcp documentation
+- If you want to see the GCP configuration for staging and production, see the depolyment-gcp documentation
 
 ## Author
 
