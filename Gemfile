@@ -84,6 +84,9 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 
+  # Hirb provides a mini view framework for console applications and uses it to improve ripl(irb)‘s default inspect output.
+  gem 'hirb'
+
   # Linters, etc:
   gem 'htmlbeautifier', '~> 1.4', '>= 1.4.2', require: false
 

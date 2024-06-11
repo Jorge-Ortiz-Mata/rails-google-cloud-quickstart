@@ -1,43 +1,16 @@
-## IMPORTANT: RUN THIS AFTER CREATING THE REPO FROM THE TEMPLATE!!!
+# Rails Google Cloud Quickstart
 
-Once you've created this repository from the
-['IcaliaLabs/rails-google-cloud-quickstart'](https://github.com/IcaliaLabs/rails-google-cloud-quickstart)
-template, please run this script inside Visual Studio Code Dev Container - or if
-you have rails installed in the host, you can do it directly:
+This is a Ruby on Rails template with all the basic configuration for creating a web application using the Google Cloud platform.
+There are some configurations depending on the environment (development, staging, production) set.
 
-```bash
-bin/run-after-repo-create-from-template
-```
+Under the folder **/docs** of the root path, you will find each configuration required for each environment
 
-You should delete this section of the `README.md` file after successfully
-running this command.
+- If you want to start developing locally, see the development documentation.
 
-Create a commit with these changes, and push it to `main`.
+- If you want to see the GCP configuration for staging and production, see the gcp documentation
 
-A `config/master.key` file should be created in the process. Make sure you store
-the contents in Google Cloud Secret Manager.
+## Author
 
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Jorge Ortiz
+- ortiz.mata.jorge@gmail.com
+- Software Engineer

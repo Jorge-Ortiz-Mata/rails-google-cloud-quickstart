@@ -1,0 +1,35 @@
+name: CI/CD Production
+
+# on:
+#   workflow_dispatch:
+#   release:
+#     types:
+#       - published
+
+# Generate a GitHub token that can be exchanged with Google Cloud - see
+# https://github.com/google-github-actions/auth/tree/v0.6.0#setting-up-workload-identity-federation
+permissions:
+  contents: read
+  id-token: write
+  deployments: write
+
+jobs:
+  test-and-build:
+    name: Integration
+    uses: ./.github/workflows/test-and-build.yml
+    secrets: inherit
+
+  deploy-to-gcp:
+    name: Deploy to GCP
+    uses: ./.github/workflows/cloud-run.yml
+    needs:
+      - test-and-build
+    with:
+      environment: production
+      deploy-name: production
+      cloud-sql-instance: rails-google-cloud-quickstart:us-central1:pg-fourteen-a
+      cloud-sql-username-secret: database-username:latest
+      cloud-sql-password-secret: database-password:latest
+      cloud-run-service-suffix: ${{ needs.test-and-build.outputs.git-commit-short-sha }}
+      cloud-run-container-image: us-central1-docker.pkg.dev/icalialabs-production/app/yohapi@${{ needs.test-and-build.outputs.container-image-digest }}
+    secrets: inherit

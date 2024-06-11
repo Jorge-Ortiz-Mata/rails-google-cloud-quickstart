@@ -1,12 +1,12 @@
 name: Cleanup Artifact Registry
 
-on:
-  # Run manually from the Actions tab:
-  workflow_dispatch:
+# on:
+#   # Run manually from the Actions tab:
+#   workflow_dispatch:
 
-  schedule:
-    # Run each night:
-    - cron: '0 17 * * *'
+#   schedule:
+#     # Run each night:
+#     - cron: '0 17 * * *'
 
 # Generate a GitHub token that can be exchanged with Google Cloud - see
 # https://github.com/google-github-actions/auth/tree/v0.6.0#setting-up-workload-identity-federation

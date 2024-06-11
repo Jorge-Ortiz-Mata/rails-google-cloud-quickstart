@@ -24,7 +24,8 @@ jobs:
     outputs:
       git-commit-short-sha: ${{ steps.variables.outputs.git-commit-short-sha }}
       container-image-digest: ${{ steps.build-and-push-release-image.outputs.digest }}
-
+    env:
+      CC_TEST_REPORTER_ID: 2e87d3e310fb026b359bfcdbc41d2191772af8ba9a32ac217f3ea05716243a17
     steps:
       - name: Checkout the code
         uses: actions/checkout@v3.1.0
@@ -59,17 +60,15 @@ jobs:
             DEVELOPER_UID=${{ steps.variables.outputs.runner-uid }}
             DEVELOPER_USERNAME=${{ steps.variables.outputs.runner-user }}
           tags: |
-            icalialabs/rails-google-cloud-quickstart:testing-${{ steps.variables.outputs.git-dasherized-branch }}
+            icalialabs/yohapi:testing-${{ steps.variables.outputs.git-dasherized-branch }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       # - name: Prepare test coverage reporting on CodeClimate
       #   uses: icalia-actions/cc-test-reporter-base@v0.0.2
-      #   env:
-      #     CC_TEST_REPORTER_ID: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
       #   with:
-      #       command: before-build
-      #       version: "0.10.3"
+      #     command: before-build
+      #     version: "0.10.3"
 
       - name: Run tests
         env:
@@ -78,13 +77,18 @@ jobs:
           TESTING_IMAGE_TAG: ":testing-${{ steps.variables.outputs.git-dasherized-branch }}"
         run: docker compose run --rm tests
 
+      # - name: Workaround for coverage report to CodeClimate with jq
+      #   if: always()
+      #   run: |
+      #     jq 'map_values(. | map_values(if type=="object" then map_values(.lines) else . end))' coverage/.resultset.json > coverage/.resultset_workaround.json
+      #     diff -uw coverage/.resultset.json coverage/.resultset.json || true
+      #     cat coverage/.resultset_workaround.json > coverage/.resultset.json
+
       # - name: Publish test coverage report to CodeClimate
       #   uses: icalia-actions/cc-test-reporter-base@v0.0.2
-      #   env:
-      #     CC_TEST_REPORTER_ID: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
       #   with:
-      #       command: after-build --coverage-input-type simplecov --prefix /workspaces/rails-google-cloud-quickstart
-      #       version: "0.10.3"
+      #     command: after-build --coverage-input-type simplecov --prefix /workspaces/yohapi
+      #     version: "0.10.3"
 
       - name: Archive test logs and screenshots
         uses: actions/upload-artifact@v3.1.0
@@ -96,32 +100,32 @@ jobs:
             log/test.log
             tmp/capybara/screenshots
 
-      # - name: Authenticate to Google Cloud
-      #   uses: google-github-actions/auth@v1.0.0
-      #   with:
-      #     service_account: github-actions-runner@rails-google-cloud-quickstart.iam.gserviceaccount.com
-      #     workload_identity_provider: projects/000000000000/locations/global/workloadIdentityPools/devops/providers/github
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1.0.0
+        with:
+          service_account: github-actions-runner@icalialabs-staging.iam.gserviceaccount.com
+          workload_identity_provider: projects/88514678916/locations/global/workloadIdentityPools/ci-workload-pool/providers/github
 
-      # - name: Set up Google Cloud SDK
-      #   uses: google-github-actions/setup-gcloud@v1.0.0
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1.0.0
 
-      # - name: Authorize push to Google Cloud Artifact Registry
-      #   run: gcloud auth configure-docker us-central1-docker.pkg.dev
+      - name: Authorize push to Google Cloud Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
-      # - name: Build & Push Release Image
-      #   id: build-and-push-release-image
-      #   uses: docker/build-push-action@v3.2.0
-      #   with:
-      #     push: true
-      #     target: release
-      #     platforms: linux/amd64
-      #     builder: ${{ steps.buildx.outputs.name }}
-      #     build-args: |
-      #       DEVELOPER_UID=${{ steps.variables.outputs.runner-uid }}
-      #       DEVELOPER_USERNAME=${{ steps.variables.outputs.runner-user }}
-      #     tags: |
-      #       us-central1-docker.pkg.dev/rails-google-cloud-quickstart/rails-google-cloud-quickstart/rails-google-cloud-quickstart-app:${{ steps.variables.outputs.git-commit-short-sha }}
-      #       us-central1-docker.pkg.dev/rails-google-cloud-quickstart/rails-google-cloud-quickstart/rails-google-cloud-quickstart-app:${{ steps.variables.outputs.git-dasherized-branch }}
-      #       us-central1-docker.pkg.dev/rails-google-cloud-quickstart/rails-google-cloud-quickstart/rails-google-cloud-quickstart-app:latest
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
+      - name: Build & Push Release Image
+        id: build-and-push-release-image
+        uses: docker/build-push-action@v3.2.0
+        with:
+          push: true
+          target: release
+          platforms: linux/amd64
+          builder: ${{ steps.buildx.outputs.name }}
+          build-args: |
+            DEVELOPER_UID=${{ steps.variables.outputs.runner-uid }}
+            DEVELOPER_USERNAME=${{ steps.variables.outputs.runner-user }}
+          tags: |
+            us-central1-docker.pkg.dev/icalialabs-staging/app/yohapi:${{ steps.variables.outputs.git-commit-short-sha }}
+            us-central1-docker.pkg.dev/icalialabs-staging/app/yohapi:${{ steps.variables.outputs.git-dasherized-branch }}
+            us-central1-docker.pkg.dev/icalialabs-staging/app/yohapi:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

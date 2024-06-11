@@ -13,8 +13,11 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
     ca-certificates \
     curl \
+    sudo \
     libpq5 \
     openssl \
+    imagemagick \
+    libvips \
     tzdata \
  && rm -rf /var/lib/apt/lists/*
 
@@ -234,7 +237,7 @@ COPY --from=builder /usr/local/bundle /usr/local/bundle
 COPY --from=builder --chown=nobody:nogroup /workspaces/rails-google-cloud-quickstart /workspaces/rails-google-cloud-quickstart
 
 # Set the container user to 'nobody':
-USER nobody
+USER root
 
 # Set the RAILS and PORT default values:
 ENV HOME=/workspaces/rails-google-cloud-quickstart \

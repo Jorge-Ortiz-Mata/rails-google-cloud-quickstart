@@ -1,12 +1,12 @@
-name: Review Environment Setup
+name: PR Set Up
 
-on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - opened
-      - reopened
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#     types:
+#       - opened
+#       - reopened
 
 jobs:
   create_deployment:

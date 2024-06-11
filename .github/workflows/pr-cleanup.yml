@@ -1,11 +1,11 @@
-name: Review Environment Cleanup
+name: PR Clean Up
 
-on:
-  pull_request:
-    branches:
-      - main
-    types:
-      - closed
+# on:
+#   pull_request:
+#     branches:
+#       - main
+#     types:
+#       - closed
 
 # Generate a GitHub token that can be exchanged with Google Cloud - see
 # https://github.com/google-github-actions/auth/tree/v0.6.0#setting-up-workload-identity-federation
